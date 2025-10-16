@@ -1,4 +1,4 @@
-name: Java CI - Run Unit Tests
+name: Java CI - Run Unit Tests (No Maven)
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,15 +20,12 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Compile Java files
+        run: |
+          mkdir -p out
+          javac -d out $(find src -name "*.java")
 
-      - name: Cache Maven packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-
-      # Build and test the project using Maven
-      - name: Build and Run Tests
-        run: mvn clean verify
+      - name: Run JUnit tests
+        run: |
+          wget -O junit.jar https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.10.1/junit-platform-console-standalone-1.10.1.jar
+          java -jar junit.jar --class-path out --scan-class-path
