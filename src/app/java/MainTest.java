@@ -8,7 +8,7 @@ class MainTest {
     @Test
     void testSum() {
         int result = Main.sum(2 , 3);
-        assertEquals(6, result);
+        assertEquals(5, result);
     }
     @Test
     void testMultiply() {
