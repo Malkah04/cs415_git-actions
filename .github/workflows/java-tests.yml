@@ -1,4 +1,4 @@
-name: Java CI - Run Unit Tests (No Maven)
+name: Java CI - Run Unit Tests
 
 on:
   push:
@@ -20,12 +20,16 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Download JUnit
+        run: |
+          mkdir -p libs
+          wget -O libs/junit.jar https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.10.1/junit-platform-console-standalone-1.10.1.jar
+
       - name: Compile Java files
         run: |
           mkdir -p out
-          javac -d out $(find src -name "*.java")
+          javac -cp libs/junit.jar -d out $(find src -name "*.java")
 
       - name: Run JUnit tests
         run: |
-          wget -O junit.jar https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.10.1/junit-platform-console-standalone-1.10.1.jar
-          java -jar junit.jar --class-path out --scan-class-path
+          java -jar libs/junit.jar --class-path out --scan-class-path
